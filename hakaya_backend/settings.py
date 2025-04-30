@@ -83,8 +83,10 @@ WSGI_APPLICATION = 'hakaya_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'hakayadatabase',
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "hakayadatabase",
+        "USER": "sara1",
+        # "PASSWORD": "PASSWORD"
     }
 }
 
