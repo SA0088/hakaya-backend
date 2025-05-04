@@ -3,14 +3,26 @@ from django.contrib.auth.models import User
 from .models import Category, Experience, Review
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)  
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']  # تم تعديل الحقول لتكون أكثر توافقًا مع نموذج المستخدم الافتراضي
+        fields = ['id', 'username', 'email' , 'password']  # تم تعديل الحقول لتكون أكثر توافقًا مع نموذج المستخدم الافتراضي
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']  
+        )
+      
+        return user
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'photo', 'name', 'description']
 
 class ExperienceSerializer(serializers.ModelSerializer):
     creator = UserSerializer(read_only=True)
@@ -28,7 +40,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
 class ExperienceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
-        fields = ['title', 'summary', 'category', 'image_path']  # نطلب فقط بعض الحقول عند إنشاء تجربة جديدة
+        fields = ['title', 'summary', 'category', 'image_path']  
 
     def create(self, validated_data):
         user = self.context['request'].user

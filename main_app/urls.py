@@ -1,11 +1,30 @@
+
 from django.urls import path
-from .views import ExperienceList, CreateExperienceAPIView, LikeExperienceAPIView, CategoryListView, LikeReviewAPIView, CreateReviewAPIView
+from .views import *
+from . import views
 
 urlpatterns = [
-    path('experience/', ExperienceList.as_view(), name='exp-index'),
-    path('experiences/create/', CreateExperienceAPIView.as_view(), name='create-experience'),
-    path('experiences/<int:pk>/like/', LikeExperienceAPIView.as_view(), name='like-experience'),
+    path('', views.Home.as_view(), name='home'),
+    # path('admin/', admin.site.urls),
+
+    # Auth
+    path('users/signup/', views.CreateUserView.as_view(), name='signup'),
+    path('users/login/', views.LoginView.as_view(), name='login'),
+    path('users/token/refresh/', views.VerifyUserView.as_view(), name='token_refresh'),
+    # path('users/profile/', views.user_profile, name='user-profile'),
+
+
+    # Categories
     path('categories/', CategoryListView.as_view(), name='category-list'),
-    path('reviews/create/', CreateReviewAPIView.as_view(), name='create-review'),
-    path('reviews/<int:pk>/like-toggle/', LikeReviewAPIView.as_view(), name='like-review'),
+
+    # Experiences
+    path('experiences/', ExperienceIndex.as_view(), name='experience-list-create'),
+    path('experiences/new/', CreateExperienceAPIView.as_view(), name='experience-create'),
+    path('experiences/<int:exp_id>/', ExperienceDetail.as_view(), name='experience-detail'),
+    path('experiences/<int:pk>/like/', LikeExperienceAPIView.as_view(), name='experience-like'),
+
+    # Reviews
+    path('reviews/create/', CreateReviewAPIView.as_view(), name='review-create'),
+    path('reviews/<int:pk>/like/', LikeReviewAPIView.as_view(), name='review-like'),
 ]
+
