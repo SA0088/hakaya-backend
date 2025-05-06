@@ -48,26 +48,16 @@ class ExperienceCreateSerializer(serializers.ModelSerializer):
         return experience
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    experience = serializers.PrimaryKeyRelatedField(queryset=Experience.objects.all())
-    likes_count = serializers.IntegerField(read_only=True)
-    liked_by = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    # user = serializers.SerializerMethodField()
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    experience = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
+    created_at = serializers.DateTimeField(read_only=True)
+    # likes_count = serializers.IntegerField(read_only=True)
+    # liked_by = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Review
-        fields = [
-            'id', 'experience', 'user', 'comment',
-            'likes_count', 'liked_by', 'created_at'
-        ]
-
-class ReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ['id', 'experience', 'comment']  # لا نطلب user لأنه يؤخذ من request.user
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        experience = validated_data['experience']
-        if not Experience.objects.filter(id=experience.id).exists():
-            raise serializers.ValidationError("Experience not found")
-        return Review.objects.create(user=user, **validated_data)
+        fields = ['id', 'user', 'comment', 'created_at', 'rate', 'experience' ]
+    
+    # def get_user(self, obj):
+    #     return obj.user.username

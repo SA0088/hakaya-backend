@@ -24,7 +24,7 @@ urlpatterns = [
     path('experiences/<int:pk>/like/', LikeExperienceAPIView.as_view(), name='experience-like'),
 
     # Reviews
-    path('reviews/create/', CreateReviewAPIView.as_view(), name='review-create'),
+    path('experiences/<int:exp_id>/reviews/', CreateReviewAPIView.as_view(), name='review-create'),
     path('reviews/<int:pk>/like/', LikeReviewAPIView.as_view(), name='review-like'),
 ]
 

@@ -12,11 +12,12 @@ class Category(models.Model):
 class Experience(models.Model):
     title = models.CharField(max_length=200)
     summary = models.TextField()
-    image_path = models.ImageField(upload_to='experiences/', default='default.jpg')
+    image_path = models.CharField(max_length=250)
+    # category = models.ManyToManyField(Category, related_name='experiences') 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='experiences')
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='experiences')
     liked_by = models.ManyToManyField(User, related_name='liked_experiences', blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -37,6 +38,7 @@ class Review(models.Model):
     experience = models.ForeignKey(Experience, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
+    rate = models.IntegerField()
     liked_by = models.ManyToManyField(User, related_name="liked_reviews", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
