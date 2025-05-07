@@ -212,30 +212,6 @@ class LikeExperienceAPIView(APIView):
         })
 
 
-# class CreateReviewAPIView(CreateAPIView):
-#     queryset = Review.objects.all()
-#     serializer_class = ReviewSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     # def perform_create(self, serializer):
-#     #     serializer.save(user=self.request.user)
-
-#     def post(self, request, exp_id):
-#         try:
-#             serializer = self.serializer_class(data=request.data)
-#             # if not serializer.is_valid():
-#             #     print(serializer.errors)
-#             #     return Response(serializer.errors, status=400)
-            
-#             if serializer.is_valid():
-#                 exp = Experience.objects.get(id=exp_id)
-#                 print("checking the experience object", exp)
-#                 serializer.save(experience=exp, user=request.user)
-#                 return Response(serializer.data, status=status.HTTP_200_OK)
-#         except Exception as err:
-#             print(str(err))
-#             return Response({"error": err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class CreateReviewAPIView(CreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
