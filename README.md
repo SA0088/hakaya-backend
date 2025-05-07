@@ -26,7 +26,7 @@ This repository contains the backend code for the Hakaya platform. It is built u
 
 ## ERD Diagram
 You can find the ERD (Entity Relationship Diagram) for the project here:
-- ![ERD Diagram](https://drive.google.com/file/d/1J39aur3rJ9hsl6YiEyqjN4NZ6awsynyd/view?usp=sharing) 
+- ![ERD Diagram](../hakaya-backend/ERD1.png) 
 
 ## 🗂 Routing Table
 Below is a list of available endpoints in the Hakaya backend:
