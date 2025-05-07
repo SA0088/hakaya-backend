@@ -100,9 +100,12 @@ class UserProfileView(APIView):
             'created_experiences': created_data,
             'liked_experiences': liked_data
         })
+    # def delete(self, request, *args, **kwargs):
+    #     experience = self.get_object()
+    #     if experience.owner != request.user:
+    #         return Response({"error": "You do not have permission to delete this experience."}, status=403)
+    #     return super().delete(request, *args, **kwargs)
 
-
-    
 
 class VerifyUserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -189,12 +192,14 @@ class ExperienceDetail(APIView):
             return Response(serializer.data)
         except Exception as err:
             return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-    def delete(self, request, *args, **kwargs):
-        experience = self.get_object()
-        if experience.owner != request.user:
-            return Response({"error": "You do not have permission to delete this experience."}, status=403)
-        return super().delete(request, *args, **kwargs)
+    def delete(self, request, exp_id):
+        try:
+            exp = get_object_or_404(Experience, id=exp_id)
+            exp.delete()
+            return Response({'success': True}, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
     def put(self, request, exp_id):
         try:
@@ -227,31 +232,52 @@ class LikeExperienceAPIView(APIView):
         })
 
 
+# class CreateReviewAPIView(CreateAPIView):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     # def perform_create(self, serializer):
+#     #     serializer.save(user=self.request.user)
+
+#     def post(self, request, exp_id):
+#         try:
+#             serializer = self.serializer_class(data=request.data)
+#             # if not serializer.is_valid():
+#             #     print(serializer.errors)
+#             #     return Response(serializer.errors, status=400)
+            
+#             if serializer.is_valid():
+#                 exp = Experience.objects.get(id=exp_id)
+#                 print("checking the experience object", exp)
+#                 serializer.save(experience=exp, user=request.user)
+#                 return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Exception as err:
+#             print(str(err))
+#             return Response({"error": err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class CreateReviewAPIView(CreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+    def perform_create(self, serializer):
+        # نحصل على الـ experience بناءً على الـ exp_id من الـ URL
+        exp = Experience.objects.get(id=self.kwargs['exp_id'])
+        print(exp)
+        # نقوم بحفظ المراجعة مع ربط الـ user الحالي بـ request.user
+        serializer.save(experience=exp, user=self.request.user)
+        print(serializer.errors)
 
-    def post(self, request, exp_id):
+    def post(self, request, *args, **kwargs):
         try:
-            serializer = self.serializer_class(data=request.data)
-            # if not serializer.is_valid():
-            #     print(serializer.errors)
-            #     return Response(serializer.errors, status=400)
-            
-            if serializer.is_valid():
-                exp = Experience.objects.get(id=exp_id)
-                print("checking the experience object", exp)
-                serializer.save(experience=exp, user=request.user)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            # نقوم بمعالجة البيانات باستخدام perform_create
+            return super().post(request, *args, **kwargs)
+        except Experience.DoesNotExist:
+            return Response({"error": "Experience not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as err:
             print(str(err))
-            return Response({"error": err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+            return Response({"error": str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LikeReviewAPIView(APIView):
     permission_classes = [IsAuthenticated]
