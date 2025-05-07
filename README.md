@@ -26,7 +26,7 @@ This repository contains the backend code for the Hakaya platform. It is built u
 
 ## ERD Diagram
 You can find the ERD (Entity Relationship Diagram) for the project here:
-- ![ERD Diagram](hakaya/hakaya-backend/ERD.png) 
+- ![ERD Diagram](../hakaya-backend/ERD1.png) 
 
 ## 🗂 Routing Table
 Below is a list of available endpoints in the Hakaya backend:
@@ -89,7 +89,7 @@ If you'd like to run the project using Docker, follow these steps:
 - **Password Reset**: Add a complete password reset flow to allow users to recover their accounts. 🔐
 - **Pagination**: Implement pagination for experiences and reviews to handle large datasets more efficiently. 📄
 - **Search**: Enable a search feature to allow users to find experiences based on keywords, categories, or tags. 🔍
-- **Advanced Filtering**: Add filters for sorting experiences by date, likes, and categories to improve user experience. 🎨
+- **Advanced Filtering**:Add filters for sorting experiences by date, likes, and categories to improve user experience.🎨
 - **Admin Panel**: Build a custom admin panel for managing users, experiences, and reviews. 🖥️
 - **User Notifications**: Implement real-time notifications for actions like new reviews, experience updates, etc. 📲
 - **User Roles**: Add user roles (admin, moderator, user) with specific permissions to control access. 👥
