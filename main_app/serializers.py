@@ -52,12 +52,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     experience = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
-    # likes_count = serializers.IntegerField(read_only=True)
-    # liked_by = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
+    liked_by = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'comment', 'created_at', 'rate', 'experience' ]
+        fields = ['id', 'user', 'comment', 'created_at', 'rate', 'experience', 'likes_count', 'liked_by' ]
     
     # def get_user(self, obj):
     #     return obj.user.username
