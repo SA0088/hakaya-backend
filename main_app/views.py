@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes
-
 from .models import Category, Experience, Review
 from .serializers import (
     CategorySerializer,
@@ -19,13 +18,6 @@ from .serializers import (
     UserSerializer,
     CategoryWithExperiencesSerializer
 )
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def user_profile(request):
-#     serializer = UserSerializer(request.user)
-#     return Response(serializer.data) 
 
 class Home(APIView):
   def get(self, request):
@@ -64,18 +56,7 @@ class LoginView(APIView):
         except Exception as err:
             return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# class UserProfileView(APIView):
-#     permission_classes = [IsAuthenticated]  # التأكد من أن المستخدم مسجل دخوله
 
-#     def get(self, request):
-#         try:
-#             # الحصول على المستخدم بناءً على الجلسة الحالية
-#             user = request.user
-#             # تسلسل بيانات المستخدم باستخدام UserSerializer
-#             serializer = UserSerializer(user)
-#             return Response(serializer.data)
-#         except Exception as err:
-#             return Response({'error': str(err)}, status=500)
 
 
 class UserProfileView(APIView):
@@ -100,12 +81,6 @@ class UserProfileView(APIView):
             'created_experiences': created_data,
             'liked_experiences': liked_data
         })
-    # def delete(self, request, *args, **kwargs):
-    #     experience = self.get_object()
-    #     if experience.owner != request.user:
-    #         return Response({"error": "You do not have permission to delete this experience."}, status=403)
-    #     return super().delete(request, *args, **kwargs)
-
 
 class VerifyUserView(APIView):
     permission_classes = [IsAuthenticated]
