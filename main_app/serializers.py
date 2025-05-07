@@ -49,7 +49,8 @@ class ExperienceCreateSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField()
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = UserSerializer(read_only=True)
+    # user = serializers.PrimaryKeyRelatedField(read_only=True)
     experience = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
     likes_count = serializers.IntegerField(read_only=True)

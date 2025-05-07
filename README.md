@@ -8,33 +8,51 @@ Hakaya is a platform that allows users to create, share, and interact with vario
 ## Repository Description
 This repository contains the backend code for the Hakaya platform. It is built using Django and Django Rest Framework to provide APIs for managing experiences, categories, reviews, and user interactions. 🚀
 
-## Tech Stack
-- **Backend:** Django, Django Rest Framework (DRF) 💻
-- **Database:** PostgreSQL 🗄️
-- **Authentication:** JWT (JSON Web Tokens) 🔑
-- **Image Storage:** ImageField with Pillow 🖼️
+## 🧰 Tech Stack
+
+- **Backend Framework**: Django
+- **API Framework**: Django Rest Framework (DRF)
+- **Authentication**: JWT (JSON Web Tokens) via `djangorestframework-simplejwt`
+- **Database**: PostgreSQL (or SQLite for development)
+- **ORM**: Django ORM
+- **Containerization**: Docker
+- **Frontend**: React (frontend, not included in this repo)
 
 ## Frontend Repository Link
 - [Frontend Repository](https://github.com/SA0088/hakaya-frontend) 
 
 ## Link to Deployed Site
-- [Deployed Site](http://localhost:5173/experince) 
+- [Deployed Site](http://localhost:5173/login) 
 
 ## ERD Diagram
 You can find the ERD (Entity Relationship Diagram) for the project here:
-- ![ERD Diagram](../hakaya-backend/ERD.png) 
+- ![ERD Diagram](hakaya/hakaya-backend/ERD.png) 
 
-## Routing Table
+## 🗂 Routing Table
 Below is a list of available endpoints in the Hakaya backend:
 
-| HTTP Method | Route                               | Description                          |
-|-------------|-------------------------------------|--------------------------------------|
-| GET         | /experience/                        | Get a list of experiences            |
-| POST        | /experiences/create/                | Create a new experience              |
-| PUT         | /experiences/{id}/like/             | Like or unlike an experience         |
-| GET         | /categories/                        | Get a list of categories             |
-| GET         | /reviews/{id}/like-toggle/          | Toggle like status for a review      |
-| POST        | /reviews/create/                    | Create a new review                  |
+| **Endpoint**                                  | **Method** | **Description**                                      | **Authentication**     |
+|----------------------------------------------|------------|------------------------------------------------------|------------------------|
+| `/`                                          | GET        | Welcome message                                      | No                     |
+| `/users/signup/`                             | POST       | Create a new user and return JWT tokens              | No                     |
+| `/users/login/`                              | POST       | Log in with credentials and return JWT tokens        | No                     |
+| `/users/token/refresh/`                      | GET        | Refresh JWT tokens                                   | Yes (JWT Required)      |
+| `/users/profile/`                            | GET        | Get the authenticated user's profile (including experiences and liked experiences) | Yes (JWT Required)      |
+| `/categories/`                               | GET        | List all categories                                  | Yes (JWT Required)      |
+| `/categories/<pk>/experiences/`              | GET        | Get experiences by category                          | Yes (JWT Required)      |
+| `/experiences/`                              | GET        | List all experiences                                 | Yes (JWT Required)      |
+| `/experiences/`                              | POST       | Create a new experience                              | Yes (JWT Required)      |
+| `/experiences/new/`                          | POST       | Create a new experience (alternative method)         | Yes (JWT Required)      |
+| `/experiences/<exp_id>/`                     | GET        | Get experience details                               | Yes (JWT Required)      |
+| `/experiences/<exp_id>/`                     | PUT        | Update an experience                                 | Yes (JWT Required)      |
+| `/experiences/<exp_id>/`                     | DELETE     | Delete an experience                                 | Yes (JWT Required)      |
+| `/experiences/<pk>/liked/`                   | PUT        | Like/Unlike an experience                            | Yes (JWT Required)      |
+| `/experiences/users/liked/`                  | GET        | Get all liked experiences by authenticated user      | Yes (JWT Required)      |
+| `/experiences/<exp_id>/reviews/`             | POST       | Create a review for a specific experience            | Yes (JWT Required)      |
+| `/reviews/<pk>/like/`                        | PUT        | Like/Unlike a review                                 | Yes (JWT Required)      |
+| `/users/forgot-password/`                    | POST       | Send a password reset email                          | No                     |
+
+
 
 ## Installation Instructions
 
@@ -64,14 +82,21 @@ If you'd like to run the project using Docker, follow these steps:
 
     The backend will be available at `http://127.0.0.1:8000/` on your local machine.
 
-## Icebox Features
+## 🧊 IceBox Features ❄️
 
-- **User Profile Management:** Allow users to update their profiles, including profile picture, bio, and personal details.
-- **Search Functionality:** Enable searching for experiences based on categories, keywords, or tags.
-- **Admin Panel Enhancements:** Improve the admin panel for better management of experiences and reviews.
-- **User Notifications:** Notify users when someone likes their experience or review.
-- **Rating System for Experiences:** Add a rating system (stars, 1-5) for experiences, in addition to likes.
-- **Social Media Sharing:** Enable users to share experiences on social media platforms like Facebook or Twitter.
+### Features Pending Implementation (Exciting Features! 🎉)
+
+- **Password Reset**: Add a complete password reset flow to allow users to recover their accounts. 🔐
+- **Pagination**: Implement pagination for experiences and reviews to handle large datasets more efficiently. 📄
+- **Search**: Enable a search feature to allow users to find experiences based on keywords, categories, or tags. 🔍
+- **Advanced Filtering**: Add filters for sorting experiences by date, likes, and categories to improve user experience. 🎨
+- **Admin Panel**: Build a custom admin panel for managing users, experiences, and reviews. 🖥️
+- **User Notifications**: Implement real-time notifications for actions like new reviews, experience updates, etc. 📲
+- **User Roles**: Add user roles (admin, moderator, user) with specific permissions to control access. 👥
+- **Social Login**: Enable login via Google, Facebook, or other social platforms for an easier user sign-up process. 🌐
+- **User Achievements**: Create a gamification feature where users can earn badges based on their activity. 🏆
+
+
 
 
 
