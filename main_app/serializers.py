@@ -61,3 +61,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     
     # def get_user(self, obj):
     #     return obj.user.username
+class CategoryWithExperiencesSerializer(serializers.ModelSerializer):
+    experiences = ExperienceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'experiences']

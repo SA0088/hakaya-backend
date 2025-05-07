@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from rest_framework.decorators import api_view, permission_classes
 
 from .models import Category, Experience, Review
 from .serializers import (
@@ -15,7 +16,8 @@ from .serializers import (
     ExperienceSerializer,
     ExperienceCreateSerializer,
     ReviewSerializer,
-    UserSerializer
+    UserSerializer,
+    CategoryWithExperiencesSerializer
 )
 
 
@@ -62,6 +64,45 @@ class LoginView(APIView):
         except Exception as err:
             return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# class UserProfileView(APIView):
+#     permission_classes = [IsAuthenticated]  # التأكد من أن المستخدم مسجل دخوله
+
+#     def get(self, request):
+#         try:
+#             # الحصول على المستخدم بناءً على الجلسة الحالية
+#             user = request.user
+#             # تسلسل بيانات المستخدم باستخدام UserSerializer
+#             serializer = UserSerializer(user)
+#             return Response(serializer.data)
+#         except Exception as err:
+#             return Response({'error': str(err)}, status=500)
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        # Serialize user data
+        user_data = UserSerializer(user).data
+
+        # Experiences created by the user
+        created_experiences = Experience.objects.filter(creator=user)
+        created_data = ExperienceSerializer(created_experiences, many=True).data
+
+        # Experiences liked by the user (correct field used here)
+        liked_experiences = Experience.objects.filter(liked_by=user)
+        liked_data = ExperienceSerializer(liked_experiences, many=True).data
+
+        return Response({
+            'user': user_data,
+            'created_experiences': created_data,
+            'liked_experiences': liked_data
+        })
+
+
+    
 
 class VerifyUserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -111,6 +152,7 @@ class ExperienceIndex(APIView):
             queryset = Experience.objects.all()
             # queryset = Experience.objects.filter(creator=request.user)
             serializer = ExperienceSerializer(queryset, many=True)
+            print(serializer.data)
             return Response(serializer.data)
         except Exception as err:
             print(err)
@@ -137,6 +179,7 @@ class CreateExperienceAPIView(CreateAPIView):
         serializer.save(creator=self.request.user)
         
 class ExperienceDetail(APIView):
+    
     permission_classes = [IsAuthenticated]
 
     def get(self, request, exp_id):
@@ -144,6 +187,30 @@ class ExperienceDetail(APIView):
             experience = get_object_or_404(Experience, id=exp_id)
             serializer = ExperienceSerializer(experience)
             return Response(serializer.data)
+        except Exception as err:
+            return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def delete(self, request, *args, **kwargs):
+        experience = self.get_object()
+        if experience.owner != request.user:
+            return Response({"error": "You do not have permission to delete this experience."}, status=403)
+        return super().delete(request, *args, **kwargs)
+    
+    def put(self, request, exp_id):
+        try:
+            experience = get_object_or_404(Experience, id=exp_id)
+
+            # تحقق من أن المستخدم هو المنشئ
+            if experience.creator != request.user:
+                return Response({"error": "You do not have permission to update this experience."}, status=403)
+
+            serializer = ExperienceCreateSerializer(experience, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
         except Exception as err:
             return Response({'error': str(err)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -202,3 +269,20 @@ class LikeReviewAPIView(APIView):
             "message": message,
             "likes_count": review.likes_count
         })
+class CategoryWithExperiencesView(APIView):
+    def get(self, request, pk):
+        try:
+            category = Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CategoryWithExperiencesSerializer(category)
+        return Response(serializer.data)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def liked_experiences(request):
+    user = request.user
+    liked = user.liked_experiences.all()  # تأكد من وجود العلاقة
+    data = [{'id': exp.id, 'title': exp.title, 'summary': exp.summary} for exp in liked]
+    return Response(data)
