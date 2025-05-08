@@ -13,7 +13,6 @@ class Experience(models.Model):
     title = models.CharField(max_length=200)
     summary = models.TextField()
     image_path = models.CharField(max_length=250)
-    # category = models.ManyToManyField(Category, related_name='experiences') 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='experiences')
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='experiences')
     liked_by = models.ManyToManyField(User, related_name='liked_experiences', blank=True)

@@ -249,26 +249,7 @@ class LikeReviewAPIView(APIView):
         except Exception as err:
             print(str(err))
             return Response({"error": err})
-    # def put(self, request, pk):
-    #     try:
-    #         review = get_object_or_404(Review, pk=pk)
-    #         user = request.user
-    #         if user in review.liked_by.all():
-    #             review.liked_by.remove(user)
-    #             message = "Like removed."
-    #         else:
-    #             review.liked_by.add(user)
-    #             message = "Review liked."
-    #         return Response({ "message": message, "likes_count": review.likes_count })
-    #     except Exception as err:
-    #         print(str(err))
-    #         return Response({"error": err})
-        
-
-
     
-
-
 
 class CategoryWithExperiencesView(APIView):
     def get(self, request, pk):

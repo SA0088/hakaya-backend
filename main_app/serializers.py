@@ -48,9 +48,7 @@ class ExperienceCreateSerializer(serializers.ModelSerializer):
         return experience
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # user = serializers.SerializerMethodField()
     user = UserSerializer(read_only=True)
-    # user = serializers.PrimaryKeyRelatedField(read_only=True)
     experience = serializers.PrimaryKeyRelatedField(read_only=True, required=False)
     created_at = serializers.DateTimeField(read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
@@ -59,9 +57,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'user', 'comment', 'created_at', 'rate', 'experience', 'likes_count', 'liked_by' ]
-    
-    # def get_user(self, obj):
-    #     return obj.user.username
+
 class CategoryWithExperiencesSerializer(serializers.ModelSerializer):
     experiences = ExperienceSerializer(many=True, read_only=True)
 
